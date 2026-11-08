@@ -25,9 +25,17 @@ jobs:
         run: |
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
 
-      - uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: "8.9"
+      - name: Install Gradle 8.9 (with retries and a backup mirror)
+        run: |
+          for url in \
+            https://services.gradle.org/distributions/gradle-8.9-bin.zip \
+            https://downloads.gradle.org/distributions/gradle-8.9-bin.zip \
+            https://mirrors.cloud.tencent.com/gradle/gradle-8.9-bin.zip; do
+            if curl -fsSL --retry 4 --retry-delay 5 --retry-all-errors -o /tmp/gradle.zip "$url"; then break; fi
+            echo "download failed from $url, trying next"
+          done
+          unzip -q /tmp/gradle.zip -d /opt
+          echo "/opt/gradle-8.9/bin" >> "$GITHUB_PATH"
 
       - name: Build debug APK
         working-directory: android
