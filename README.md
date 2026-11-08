@@ -6,7 +6,7 @@ Sortia is an Android app that sorts the files, photos and videos on your phone i
 
 ## What it does
 
-- **Organize now**: scans your folders and files them into `Sortia/Images`, `Videos`, `Audio`, `Documents`, `Archives`, `Apps` and `Other`. Photos and videos can go into `Year/Month` folders, using the date in the file name, the date the photo was taken (EXIF), or the file date.
+- **Organize now**: scans your folders and files them into `Sortia/Images`, `Videos`, `Audio`, `Documents`, `Archives`, `Apps` and `Other`. Documents are split into `PDF`, `Word`, `Excel`, `PowerPoint` and `Other`. Photos and videos can go into `Year/Month` folders, using the date in the file name, the date the photo was taken (EXIF), or the file date.
 - **Preview**: see exactly how many files of each type will move before anything happens (you can switch this off for a true one-tap run).
 - **Undo**: every run is logged. Put back one run, any time, from History.
 - **Find duplicates**: compares what is inside the files (not just names), keeps the oldest copy, and moves the extras to `Sortia/Duplicates` or deletes them to free space.

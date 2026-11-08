@@ -203,14 +203,26 @@ object Organizer {
         return cal.get(Calendar.YEAR) to (cal.get(Calendar.MONTH) + 1)
     }
 
+    /** Documents are split by kind: PDF, Word, Excel, PowerPoint, and everything else. */
+    private fun docFolder(ext: String): String = when (ext.lowercase()) {
+        "pdf" -> "PDF"
+        "doc", "docx", "odt", "rtf" -> "Word"
+        "xls", "xlsx", "ods", "csv" -> "Excel"
+        "ppt", "pptx", "odp" -> "PowerPoint"
+        else -> "Other"
+    }
+
     suspend fun plan(opts: Options): Plan = withContext(Dispatchers.IO) {
         val now = System.currentTimeMillis()
         val root = destRoot()
         val moves = ArrayList<Move>()
-        for (f in candidates(opts.sources)) {
+        // Documents filed earlier into the flat Sortia/Documents folder get sorted by kind too.
+        val flatDocs = File(root, Cat.DOCUMENTS.folder).listFiles()?.filter { it.isFile && !it.name.startsWith(".") }.orEmpty()
+        for (f in candidates(opts.sources) + flatDocs) {
             if (!isSettled(f, now)) continue
             val cat = Cat.of(f)
             var dir = File(root, cat.folder)
+            if (cat == Cat.DOCUMENTS) dir = File(dir, docFolder(f.extension))
             if (opts.byDate && (cat == Cat.IMAGES || cat == Cat.VIDEOS)) {
                 val (y, m) = yearMonth(f, cat)
                 dir = File(File(dir, y.toString()), String.format(Locale.US, "%02d", m))
